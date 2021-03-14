@@ -52,7 +52,7 @@ class _LogInState extends State<LogIn> {
                   image: AssetImage("assets/images/bg3.jpg"), fit: BoxFit.fill)),
           child: SingleChildScrollView(
             child: Container(
-              height: MediaQuery.of(context).size.height -75 ,
+              height: MediaQuery.of(context).size.height -65 ,
               alignment: Alignment.center,
               child: Container(
 

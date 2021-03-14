@@ -1,8 +1,12 @@
 
-
 import 'dart:ui';
-
+import 'package:cafe91/screens/LogInScreen.dart';
+import 'package:cafe91/screens/OrderScreen.dart';
+import 'package:cafe91/screens/Settings.dart';
 import 'package:cafe91/screens/cart.dart';
+import 'package:cafe91/screens/favorites.dart';
+import 'package:cafe91/screens/logoutsure.dart';
+import 'package:cafe91/screens/searchScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -22,57 +26,240 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
     });
 
   }
+  search(){
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => SearchScreen()
+    ));
+  }
+    favorites(){
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => FavScreen()
+    ));
+  }
   cartRoom(){
     Navigator.push(context, MaterialPageRoute(
       builder: (context) => CartScreen()
     ));
   }
+   slideSheet() {
+     if (true) {
+       showModalBottomSheet(
+           context: context,
+           builder: (context) {
+             return Container(
+               //color: Color(0xFF737373),
+               child: Container(
+                 height: 200,
+                 decoration: BoxDecoration(
+                   borderRadius: BorderRadius.only(
+                       topLeft: Radius.circular(40),
+                       topRight: Radius.circular(40)),
+                   color: Colors.white,
+                 ),
+                 child: Card(
+                   shape: RoundedRectangleBorder(
+                       borderRadius: BorderRadius.circular(10)
+                   ),
+                   elevation: 6,
+                   child: Column(
+                     children: [
+                       Container(
+                           padding: EdgeInsets.symmetric(vertical: 10 , horizontal: 10),
+                           child: Text(
+                             "Confirm Logout ?",
+                             style: TextStyle(fontWeight: FontWeight.bold , fontSize: 20 , color: Colors.black54),
+                           )),
+                       //SizedBox(height: 10,),
+                       Padding(
+                         padding: const EdgeInsets.symmetric(vertical: 20 , horizontal: 76),
+                         child: Row(
+                           children: [
+                             FlatButton(
+                               color: Colors.brown,
+                               child: Text("Yes" , style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold),),
+                               onPressed: (){
+                                 Navigator.pushReplacement(context, MaterialPageRoute(
+                                     builder: (context) => LogIn()
+                                 ));
+                               },
+                             ),
+                             SizedBox(
+                               width: 20,
+                             ),
+                             FlatButton(
+                               color: Colors.brown,
+                               child: Text("No" ,style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold),),
+                               onPressed: (){
+                                 Navigator.pop(context);
+                                 // Navigator.pushReplacement(context, MaterialPageRoute(
+                                 //     builder: (context) => Cafe91MainScreen()
+                                 // ));
+                               },
+                             ),
+
+                           ],
+                         ),
+                       )
+                     ],
+                   ),
+                 ),
+               ),
+             );
+           });
+     }
+   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      drawer: Container(
+        padding: EdgeInsets.only(top: 33),
+        child: Drawer(
+          // Add a ListView to the drawer. This ensures the user can scroll
+          // through the options in the drawer if there isn't enough vertical
+          // space to fit everything.
+          child: ListView(
+            //shrinkWrap: true,
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              Column(
+                children: [
+                  Container(
+                    width: 350,
+                    height: 150,
+                    //margin: EdgeInsets.symmetric(horizontal: 0 , vertical: 10),
+                   // padding: EdgeInsets.symmetric(horizontal: 20 ),
+                    // decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(300),
+                    //     color: Colors.black45
+                    // ),
+                    child: DrawerHeader(
+                      decoration: BoxDecoration(
+                          //borderRadius: BorderRadius.circular(50),
+                          color: Color(0xffFF402C24)
+                      ),
+                          //curve: Curves.bounceInOut,
+                          child: Column(
+                            children: [
+
+                              Container(
+                                  margin : EdgeInsets.symmetric(vertical: 5),
+                                  child: Text(" Hello User" , style: TextStyle( fontWeight: FontWeight.bold , color: Colors.white54 , fontSize: 20),))
+                            ],
+                          ),
+
+                        ),
+                  ),
+                  //Center(child: Text("Name"),)
+                ],
+              ),
+              ListTile(
+                focusColor: Colors.brown,
+                title: Text('Account Settings' ,style: TextStyle(fontWeight: FontWeight.bold , color: Colors.black54),),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => AccountSettings()
+                  ));
+                 // Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Your Orders',style: TextStyle(fontWeight: FontWeight.bold , color: Colors.black54)),
+                onTap: () {
+
+                  //Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => OrderScreen()
+                  ));
+
+                },
+              ),
+              ListTile(
+                title: Text('Log Out',style: TextStyle(fontWeight: FontWeight.bold , color: Colors.black54)),
+                onTap: () {
+                  slideSheet();
+                  // Navigator.pushReplacement(context, MaterialPageRoute(
+                  //   builder: (context) => SureLogOut()
+                  // ));
+                  //Navigator.pop(context);
+                },
+              ),
+              SizedBox(height: 420,),
+              ListTile(
+                title: Center(child: Text('Developed By Anant Singhal')),
+                onTap: () {
+
+                  //Navigator.pop(context);
+                },
+              ),
+
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
-        toolbarHeight: 0,
-        backgroundColor: Colors.brown,
+        toolbarHeight: 45,
+        backgroundColor: Color(0xffFF402C24),
       ),
       bottomNavigationBar: BottomNavigationBar(
-      backgroundColor: Color(0xffFF402C24),
+        type: BottomNavigationBarType.fixed,
+         backgroundColor: Color(0xffFF402C24),
         iconSize: 20,
+        selectedFontSize: 13,
+        unselectedFontSize: 13,
         currentIndex: _currentIndex,
 
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text("Home"),
+            icon: Icon(Icons.home , color: Colors.amber[100]),
+            // ignore: deprecated_member_use
+            title: Text("Home" , style: TextStyle(color:  Colors.white54 ,fontSize: 13), ),
 
             //backgroundColor: Colors.orangeAccent,
             backgroundColor: Color(0xffFF402C24),
 
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            title: Text("  search" ),
+            icon: Icon(Icons.search , color: Colors.brown[50]),
+            // ignore: deprecated_member_use
+            title: Text("search " , style: TextStyle(color:  Colors.white54 ,fontSize: 13), ),
               backgroundColor: Color(0xffFF402C24)
           ),
           BottomNavigationBarItem(
-              icon: GestureDetector(
-                onTap: (){
-                  cartRoom();
-                },
-                  child: Icon(Icons.shopping_cart)),
-              title: Text("cart"),
+              icon: Icon(Icons.favorite , color: Colors.red[200],),
+              // ignore: deprecated_member_use
+              title: Text("favorites" , style: TextStyle(color:  Colors.white54 , fontSize: 13), ),
               backgroundColor: Color(0xffFF402C24)
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              title: Text("  profile"),
+              icon:Icon(Icons.shopping_cart , color: Colors.orange[100], ),
+              // ignore: deprecated_member_use
+              title: Text("cart" , style: TextStyle(color:  Colors.white54, fontSize: 13), ),
               backgroundColor: Color(0xffFF402C24)
           ),
+
         ],
         selectedItemColor: Colors.amber[100],
         onTap: (index){
         setState(() {
           _currentIndex = index;
+          if(_currentIndex==0){
+
+          }
+          else if(_currentIndex==1){
+            search();
+          }
+          else if(_currentIndex==2){
+            favorites();
+          }
+          else if(_currentIndex==3){
+          cartRoom();
+          }
+
+
+         // slideSheet();
 
         });
         },
@@ -84,6 +271,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
         //         fit: BoxFit.fitHeight
         //     )
         // ),
+
         child: ListView(
          children: [
           SizedBox(height: 0,),
@@ -96,64 +284,33 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
            //     )
            //   ),
            // ),
-           Container(
-             height: 100,
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20 , vertical: 10),
 
-             child: Padding(
-               padding: const EdgeInsets.only(left: 15),
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.start,
-                 children: [
-
-                   // Padding(
-                   //   padding: EdgeInsets.only(right: 0),
-                   //   child: Container(
-                   //     height: 60,
-                   //     width: 60,
-                   //     // decoration: BoxDecoration(
-                   //     //  // color: Colors.brown,
-                   //     //  // borderRadius: BorderRadius.horizontal(left: Radius.circular(10) ,right:Radius.circular(100)  ),
-                   //     //   //border: Border.all(color: Colors.brown),
-                   //     //   image: DecorationImage(
-                   //     //       image:AssetImage('assets/images/cafe91.JPG') ,
-                   //     //     fit:  BoxFit.contain,
-                   //     //   ),
-                   //     // ),
-                   //   ),
-                   //),
-                   Card(
-                     shape: RoundedRectangleBorder(
-                       borderRadius: BorderRadius. circular(100),
-                     ),
-                     elevation: 20,
-                     child: Container(
-                       padding: EdgeInsets.only(left: 30, top: 15 ,bottom: 15 , right: 30),
-                       decoration: BoxDecoration(
-                         //border: Border.all(color: Colors.brown ,width: 3),
-                         borderRadius: BorderRadius.only(topRight: Radius.circular(20),  bottomLeft: Radius.circular(20)),
-                         gradient: LinearGradient(
-                           colors: [ Colors.brown,Color(0xffFF341006)]
-                         )
-
-                       ),
-
-                         //padding: const EdgeInsets.only(left: 10 , right: 10, top: 10 ,bottom: 10),
-                         child: Text(
-                             "Welcome To Cafe 91!",
-                             style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                               fontStyle: FontStyle.italic,
-                               color: Colors.white
-                             )
-                         ),
-
-                     ),
-                   ),
-                 ],
-               ),
-             ),
-           ),
+            child: Card(
+              color:  Color(0xffFF341006),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20)
+              ),
+              elevation: 10,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                   gradient: LinearGradient(
+                     colors: [ Colors.brown , Color(0xffFF341006),]
+                   )
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 50 , top: 15 , bottom:  15),
+                  child: Row(
+                    children: [
+                      Text("Welcome To Cafe 91 !" , style: TextStyle(fontSize: 20 , fontStyle: FontStyle.italic , color: Colors.white , fontWeight: FontWeight.bold),)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
            SizedBox(height: 20),
            Padding(
              padding: const EdgeInsets.only(left: 35),
@@ -192,38 +349,52 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
            ),
            Container( padding : EdgeInsets.symmetric(horizontal: 100, vertical: 0),child: Text(" Swipe for great servings" , style: TextStyle(fontSize: 12),)),
            SizedBox(height: 28,),
-           Container( padding : EdgeInsets.symmetric(horizontal: 30, vertical: 0),child: Text("Food catalogue" , style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)),
+           Container( padding : EdgeInsets.symmetric(horizontal: 30, vertical: 5),child: Text("Food catalogue" , style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)),
            Column(
              children: [
-               Row(
-                 children: [
-                   menuList("Maggi","assets/images/mg.jpg"),
-                   menuList("Pizzas","assets/images/shk.jpg"),
+               Padding(
+                 padding: const EdgeInsets.symmetric(horizontal: 5),
+                 child: Row(
+                   children: [
+                     menuList("Maggi","assets/images/mg.jpg"),
+                     SizedBox(width: 10,),
+                     menuList("Pizzas","assets/images/shk.jpg"),
 
-                 ],
+                   ],
+                 ),
+               ),
+               Padding(
+                 padding: const EdgeInsets.symmetric(horizontal: 5),
+                 child: Row(
+                   children: [
+                     menuList("Maggi","assets/images/sw2.jpg"),
+                     SizedBox(width: 10,),
+                     menuList("Pizzas","assets/images/ps4.jpg"),
+                   ],
+                 ),
                ),
                Row(
                  children: [
-                   menuList("Maggi","assets/images/sw2.jpg"),
-                   menuList("Pizzas","assets/images/ps4.jpg"),
+                   Container( padding : EdgeInsets.symmetric(horizontal: 30, vertical: 5),child: Text("Meals And Combos" , style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)),
                  ],
                ),
-               Row(
-                 children: [
-                   Container( padding : EdgeInsets.symmetric(horizontal: 30, vertical: 10),child: Text("Meals And Combos" , style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)),
-                 ],
+               Padding(
+                 padding: const EdgeInsets.symmetric(horizontal: 5),
+                 child: Row(
+                   children: [
+                     menuList("Maggi", "assets/images/mg.jpg"),
+                     menuList("Pizzas","assets/images/re.jpg"),
+                   ],
+                 ),
                ),
-               Row(
-                 children: [
-                   menuList("Maggi", "assets/images/mg.jpg"),
-                   menuList("Pizzas","assets/images/re.jpg"),
-                 ],
-               ),
-               Row(
-                 children: [
-                   menuList("Maggi","assets/images/ck2.jpg"),
-                   menuList("Pizzas","assets/images/mg.jpg"),
-                 ],
+               Padding(
+                 padding: const EdgeInsets.symmetric(horizontal: 5),
+                 child: Row(
+                   children: [
+                     menuList("Maggi","assets/images/ck2.jpg"),
+                     menuList("Pizzas","assets/images/mg.jpg"),
+                   ],
+                 ),
                ),
              ],
            ),
@@ -237,7 +408,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
     return  Container(
       height: 200,
 
-        padding: EdgeInsets.only(left: 20 , right:20 ),
+        padding: EdgeInsets.only(left: 25 , right:20 ),
         child: Container(
 
           height: 300,
@@ -284,7 +455,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                                       color: Colors.brown,
                                     ),
                                     child: IconButton(
-                                      icon: Icon(Icons.favorite , color: isFav ?   Colors.red : Colors.white54),
+                                      icon: Icon(Icons.favorite , color: isFav ?   Colors.red[200] : Colors.white54),
                                       onPressed: (){
                                         fav();
                                       },
@@ -365,7 +536,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                           width: 100,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Color(0xffFF341006) , width: 3 ,),
+                              border: Border.all(color: Color(0xffFFF1AE81) , width: 3 ,),
                               gradient: LinearGradient(
                                   colors: [  Color(0xffFFF1AE81) , Color(0xffFFF1AE81),]
                                 //, Color(0xffFF99A6A8)
@@ -386,7 +557,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
   }
   menuList(String item ,String imgPath){
     return Padding(
-      padding: const EdgeInsets.only(left: 20 , bottom: 5, top: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
       child: Container(
 
         //padding: EdgeInsets.only(left: 20 , right: 10),
@@ -396,7 +567,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)
           ),
-          elevation: 4,
+          elevation: 8,
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),

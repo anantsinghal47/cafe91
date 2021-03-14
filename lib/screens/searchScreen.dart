@@ -3,24 +3,24 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-class CartScreen extends StatefulWidget {
+class SearchScreen extends StatefulWidget {
   @override
-  _CartScreenState createState() => _CartScreenState();
+  _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xffFF402C24),
-        title: Text("cart screen"),
+        title: Text("Search Food"),
 
       ),
       body: Container(
         child: Column(children: [
           Container(
-            child:Text("")
+              child:Text("")
           ),
         ],),
       ),

@@ -3,24 +3,24 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-class CartScreen extends StatefulWidget {
+class FavScreen extends StatefulWidget {
   @override
-  _CartScreenState createState() => _CartScreenState();
+  _FavScreenState createState() => _FavScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _FavScreenState extends State<FavScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xffFF402C24),
-        title: Text("cart screen"),
+        title: Text("Your Favorites"),
 
       ),
       body: Container(
         child: Column(children: [
           Container(
-            child:Text("")
+              child:Text("")
           ),
         ],),
       ),
