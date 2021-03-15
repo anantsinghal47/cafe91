@@ -1,16 +1,16 @@
-
 import 'dart:ui';
-import 'package:cafe91/screens/LogInScreen.dart';
+import 'package:cafe91/helper/authenticate.dart';
 import 'package:cafe91/screens/OrderScreen.dart';
 import 'package:cafe91/screens/Settings.dart';
 import 'package:cafe91/screens/cart.dart';
 import 'package:cafe91/screens/favorites.dart';
-import 'package:cafe91/screens/logoutsure.dart';
 import 'package:cafe91/screens/searchScreen.dart';
+import 'package:cafe91/services/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+
 class Cafe91MainScreen extends StatefulWidget {
   @override
   _Cafe91MainScreenState createState() => _Cafe91MainScreenState();
@@ -19,6 +19,8 @@ class Cafe91MainScreen extends StatefulWidget {
 class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
   bool isFav = false;
   int _currentIndex = 0;
+  AuthMethods authMethods  = new AuthMethods();
+
   fav(){
     print("pressed");
     setState(() {
@@ -78,8 +80,9 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                                color: Colors.brown,
                                child: Text("Yes" , style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold),),
                                onPressed: (){
+                                 authMethods.signOut();
                                  Navigator.pushReplacement(context, MaterialPageRoute(
-                                     builder: (context) => LogIn()
+                                     builder: (context) => Authenticate()
                                  ));
                                },
                              ),
@@ -202,6 +205,21 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
       appBar: AppBar(
         toolbarHeight: 45,
         backgroundColor: Color(0xffFF402C24),
+        actions: [
+
+          GestureDetector(
+            onTap: (){
+              slideSheet();
+              // Navigator.push(context, MaterialPageRoute(
+              //   builder: (context) => Authenticate()
+              // ));
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Icon(Icons.logout ,),
+            ),
+          )
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -267,7 +285,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
       body: Container(
         // decoration: BoxDecoration(
         //     image:DecorationImage(
-        //         image: AssetImage("assets/images/co.jpeg"),
+        //         image: AssetImage("assets/images/adobe.png"),
         //         fit: BoxFit.fitHeight
         //     )
         // ),

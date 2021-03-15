@@ -1,0 +1,39 @@
+  {
+  "project_info": {
+    "project_number": "897097017541",
+    "project_id": "cafe91",
+    "storage_bucket": "cafe91.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897097017541:android:208f72cd66eabcd80e28ac",
+        "android_client_info": {
+          "package_name": "com.example.cafe91"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "897097017541-nfim5j29o80cjv4gi6dt96sqppjkg4fp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDFne3QP5uiiAjc0Vj9ChgXEnuVaGzTwE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "897097017541-nfim5j29o80cjv4gi6dt96sqppjkg4fp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

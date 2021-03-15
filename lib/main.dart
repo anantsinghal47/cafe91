@@ -1,12 +1,14 @@
-import 'package:cafe91/screens/LogInScreen.dart';
-import 'package:cafe91/screens/cafeMainScreen.dart';
+import 'package:cafe91/helper/authenticate.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -27,7 +29,7 @@ class _MyAppState extends State<MyApp> {
         scaffoldBackgroundColor: Colors.white,
         //primarySwatch: Colors.lightBlue,
       ),
-      home: Cafe91MainScreen()
+      home: Authenticate()
     );
   }
 }
