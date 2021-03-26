@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:cafe91/helper/authenticate.dart';
 import 'package:cafe91/screens/OrderScreen.dart';
 import 'package:cafe91/screens/Settings.dart';
-import 'package:cafe91/screens/cart.dart';
+import 'package:cafe91/screens/cartScreen.dart';
 import 'package:cafe91/screens/favorites.dart';
 import 'package:cafe91/screens/searchScreen.dart';
 import 'package:cafe91/services/auth.dart';
@@ -10,24 +10,88 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:cafe91/modal/product.dart';
 
+// ignore: must_be_immutable
 class Cafe91MainScreen extends StatefulWidget {
+  static List<Product> updatedCartList1 = [];
+  static  int  zeroChecker = 0 ;
+  static bool temp = false;
+  static updatedList(List<Product> updatedCartList  , bool  t , int itemRemoved){
+   updatedCartList1 = updatedCartList;
+   zeroChecker = itemRemoved;
+   temp = t;
+  }
+
+  Cafe91MainScreen();
   @override
   _Cafe91MainScreenState createState() => _Cafe91MainScreenState();
 }
 
 class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
-  bool isFav = false;
+
+  // String tempTitle;
+  // String temp2Title;
+  // int tempCartIndex;
+  // int temp2CartIndex;
+  // int t =0;
+  // List<String> ids = [];
+
+  List<Product> transferList  = [];
+  List <Product> tempCartItem = [];
+  Set<Product> setCart = {};
+  Set<Product> setCart2 = {};
+  bool temp2 = false;
+  // List <Product> foodCartItem = [];
+  static List<int> cartIndexOfItems = [ 0 , 0 , 0 , 0 , 0] ;
+  static List<String> productId = [
+    "${DateTime.now().millisecondsSinceEpoch} +cheeseSamosa" ,
+    "${DateTime.now().millisecondsSinceEpoch} +paneerPizza" ,
+    "${DateTime.now().millisecondsSinceEpoch} +Chocolaty Chai",
+    "${DateTime.now().millisecondsSinceEpoch} +choleKulche",
+    "${DateTime.now().millisecondsSinceEpoch} +pasta"
+
+  ];
+  static List<bool> favIndicator = [false , false , false , false , false ];
+
+   bool isFav = false;
+   //int cartIndex = 1 ;
+   //bool isFav = false;
+   Product cheeseSamosa = new Product("Cheese Samosa" , 20  , cartIndexOfItems[0]);
+   Product paneerPizza = new Product("Paneer Pizza" , 200 , cartIndexOfItems[1] );
+   Product chocolatyChai = new Product("Chocolaty Chai" , 15  , cartIndexOfItems[2]);
+   Product choleKulche = new Product("Chole kulche" , 40  , cartIndexOfItems[3]);
+   Product pasta = new Product("Red Sauce Pasta" , 60  , cartIndexOfItems[4]);
+
+   //List<Product> product =[ cheeseSamosa, paneerPizza , ];
+
+
   int _currentIndex = 0;
   AuthMethods authMethods  = new AuthMethods();
+   fav(String id){
 
-  fav(){
-    print("pressed");
-    setState(() {
-      isFav = !isFav;
-    });
 
-  }
+     setState(() {
+       if(id == productId[0]) {
+         favIndicator[0] = !favIndicator[0];
+       }
+       if(id == productId[1]) {
+         favIndicator[1] = !favIndicator[1];
+       }
+       if(id == productId[2]) {
+         favIndicator[2] = !favIndicator[2];
+       }
+       if(id == productId[3]) {
+         favIndicator[3] = !favIndicator[3];
+       }
+       if(id == productId[4]) {
+         favIndicator[4] = !favIndicator[4];
+       }
+     });
+
+   }
+
+
   search(){
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => SearchScreen()
@@ -39,9 +103,93 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
     ));
   }
   cartRoom(){
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) => CartScreen()
-    ));
+
+     setState(() {
+       print("you are in cart screen");
+       for(int i = 0 ; i < tempCartItem.length ; i++){
+
+         for(int j =0 ; j < tempCartItem.length - 1 ; j++){
+           if(tempCartItem[i].title == tempCartItem[j+1].title){
+             print("same item matched");
+             tempCartItem[i] = tempCartItem[j+1];
+             //tempCartItem.removeAt(j+1);
+           }
+         }
+       }
+       for(int i = 0 ; i < tempCartItem.length ; i++){
+         if(tempCartItem[i].cartIndex == 0){
+           tempCartItem.removeAt(i);
+         }
+       }
+
+       print(tempCartItem.length);
+       setCart = tempCartItem.toSet();
+       print(setCart.length);
+       if((Cafe91MainScreen.updatedCartList1.isEmpty || Cafe91MainScreen.updatedCartList1 == null) && Cafe91MainScreen.temp == false ) {
+         print("t1");
+         Cafe91MainScreen.updatedCartList1 = tempCartItem;
+
+
+       }
+       if( (Cafe91MainScreen.updatedCartList1.isEmpty || Cafe91MainScreen.updatedCartList1 == null) && Cafe91MainScreen.temp   ) {
+          print("t2");
+          // for(int i ; i < setCart.length  ; i++){
+          //   setCart.elementAt(i).cartIndex = 0;
+          // }
+          // for(int i ; i < tempCartItem.length  ; i++){
+          // tempCartItem.elementAt(i).cartIndex =0;
+          // }
+          temp2 = true;
+         setCart.clear();
+
+         //tempCartItem[0].cartIndex=0;
+         Cafe91MainScreen.temp = false;
+
+       }
+       // if(temp2){
+       //   print("cart index should be zero");
+       //   for ( int i = 0 ; i < cartIndexOfItems.length ; i++){
+       //     cartIndexOfItems[i] = 0 ;
+       //   }
+       // }
+       setCart = Cafe91MainScreen.updatedCartList1.toSet();
+       print(setCart.length.toString());
+
+     });
+    setState(() {
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => CartScreen(setCart.toList())
+      ));
+    });
+
+  }
+
+  cartZeroChecker(List <int> cartIndexOfItems , title , price){
+     for(int i =0 ; i <cartIndexOfItems.length ; i++){
+       if(cartIndexOfItems[i] == 0){
+         Product tempProduct = new Product( title, price, cartIndexOfItems[i]);
+         tempCartItem.add(tempProduct);
+         //cartRoom();
+       }
+     }
+  }
+  cartIncrementGiver(List <int> cartIndexOfItems , title , price){
+    for(int i =0 ; i <cartIndexOfItems.length ; i++){
+      if(cartIndexOfItems[i] != 0){
+        Product tempProduct = new Product( title, price, cartIndexOfItems[i]);
+        tempCartItem.add(tempProduct);
+
+      }
+    }
+  }
+  cartDecrementGiver(List <int> cartIndexOfItems , title , price){
+    for(int i =0 ; i <cartIndexOfItems.length ; i++){
+      if(cartIndexOfItems[i] != 0){
+        Product tempProduct = new Product( title, price, cartIndexOfItems[i]);
+        tempCartItem.add(tempProduct);
+
+      }
+    }
   }
    slideSheet() {
      if (true) {
@@ -111,6 +259,13 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
            });
      }
    }
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +304,8 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
 
                               Container(
                                   margin : EdgeInsets.symmetric(vertical: 5),
-                                  child: Text(" Hello User" , style: TextStyle( fontWeight: FontWeight.bold , color: Colors.white54 , fontSize: 20),))
+                                  child: Text(" Hello User" ,
+                                    style: TextStyle( fontWeight: FontWeight.bold , color: Colors.white54 , fontSize: 20),))
                             ],
                           ),
 
@@ -353,18 +509,19 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
              //     )
              // ),
             // color: Colors.white,
-             height: 210,
+             height: 220,
              child: ListView(
                scrollDirection: Axis.horizontal,
                children: [
-                 listCard("assets/images/samosa.jpg" , "Samosa" , "crispy potato samosa" , "₹20" , isFav),
-                 listCard("assets/images/pizz1.jpg" , "Pizza" , "Double Cheese Pizza" , "₹200" ,isFav),
-                 listCard("assets/images/pizz1.jpg" , "Sandwich" , " cheese corn" , "price" , isFav ),
-                 listCard("assets/images/pizz1.jpg" , "Tea" , " chocolaty" , "price" , isFav ),
-                 listCard("assets/images/pizz1.jpg" , "Coffee" , "capuchino" , "price" , isFav ),
+                 listCard("assets/images/samosa.jpg" , cheeseSamosa.title , "crispy potato samosa" , cheeseSamosa.price , favIndicator[0] ,productId[0] , cartIndexOfItems[0] ),
+                 listCard("assets/images/pizz1.jpg" , paneerPizza.title , "Double Cheese Pizza" , paneerPizza.price , favIndicator[1] , productId[1] , cartIndexOfItems[1]),
+                 listCard("assets/images/ck2.jpg" , choleKulche.title , " hot chick pea " , choleKulche.price , favIndicator[2] ,productId[2] , cartIndexOfItems[2]),
+                 listCard("assets/images/pizz1.jpg" , chocolatyChai.title, " choco tea " , chocolatyChai.price , favIndicator[3] , productId[3] , cartIndexOfItems[3]),
+                 listCard("assets/images/ps4.jpg" , pasta.title , "pasta" , pasta.price , favIndicator[4] , productId[4],cartIndexOfItems[4]),
                ],
              ),
            ),
+
            Container( padding : EdgeInsets.symmetric(horizontal: 100, vertical: 0),child: Text(" Swipe for great servings" , style: TextStyle(fontSize: 12),)),
            SizedBox(height: 28,),
            Container( padding : EdgeInsets.symmetric(horizontal: 30, vertical: 5),child: Text("Food catalogue" , style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)),
@@ -422,7 +579,9 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
       ),
     );
   }
-  listCard(String imgPath, String title , String desp, String price , bool isFav){
+
+  listCard(String imgPath, String title , String desp, int price , bool isFav , String id , int cartIndex ){
+    //bool itemBool=isFav;
     return  Container(
       height: 200,
 
@@ -437,7 +596,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
               Stack(
                 children: [
                   Container(
-                    height: 200,
+                    height: 220,
                   ),
                   Positioned(
                     top: 15,
@@ -462,8 +621,14 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                              padding: const EdgeInsets.symmetric(horizontal: 10 , ),
                              child: Row(children: [
                                   SizedBox(width: 3,),
-                                  Expanded(child: Text(title, style: TextStyle(fontWeight: FontWeight.bold , fontSize: 20 , color: Colors.white))),
-                                  SizedBox(width: 90,),
+                                  Expanded(
+                                      child: Text(
+                                          title, style: TextStyle(
+                                          fontWeight: FontWeight.bold ,
+                                          fontSize: 20 , color: Colors.white)
+                                      )
+                                  ),
+                                  SizedBox(width: 0,),
                                   Container(
                                      height: 40,
                                     width: 40,
@@ -475,7 +640,9 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                                     child: IconButton(
                                       icon: Icon(Icons.favorite , color: isFav ?   Colors.red[200] : Colors.white54),
                                       onPressed: (){
-                                        fav();
+                                        print("pressed" + "$id" );
+                                        fav(id);
+
                                       },
                                     ),
                                   )
@@ -489,7 +656,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                              child: Column(
                                children: [
                                  Padding(
-                                   padding: const EdgeInsets.only(left: 10),
+                                   padding: const EdgeInsets.only(left: 10 , top: 5),
                                    child: Row(children: [
                                      Text(desp, style: TextStyle(fontWeight: FontWeight.bold , fontSize: 15 , color: Colors.white54)),
                                    ],),
@@ -498,13 +665,85 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                                  Row(children: [
                                    Padding(
                                      padding: const EdgeInsets.only(left: 10),
-                                     child: Text(price, style: TextStyle(fontWeight: FontWeight.bold , fontSize: 20 , color: Colors.white)),
+                                     child: Text("\₹${price.toString()}", style: TextStyle(fontWeight: FontWeight.bold , fontSize: 20 , color: Colors.white)),
                                    ),
-                                   SizedBox(width: 160,),
+                                   SizedBox(width: 140,),
+                                   Container(
 
-                                 ],)
+                                     child: Row(children: [
 
+                                       Container(
+                                           margin:  EdgeInsets.only(right: 10),
+                                           child: GestureDetector(
+                                                onTap: (){
+                                                 setState(() {
 
+                                                   print(tempCartItem.length);
+                                                   if(id == productId[0]) {
+                                                     cartIndexOfItems[0]++;
+                                                   }
+                                                   if(id == productId[1]) {
+                                                     cartIndexOfItems[1]++;
+                                                   }
+                                                   if(id == productId[2]) {
+                                                     cartIndexOfItems[2]++;
+                                                   }
+                                                   if(id == productId[3]) {
+                                                     cartIndexOfItems[3]++;
+                                                   }
+                                                   if(id == productId[4]) {
+                                                     cartIndexOfItems[4]++;
+                                                   }
+                                                   cartIncrementGiver(cartIndexOfItems , title , price);
+                                                 });
+                                                },
+
+                                               child: Text("+ " , style: TextStyle( color: Colors.white , fontWeight: FontWeight.bold ,fontSize: 20 ),))),
+                                       Container(
+                                         padding: EdgeInsets.only(right: 8 , left: 8 , bottom: 3 , top: 0),
+
+                                               decoration:  BoxDecoration(
+                                                 borderRadius: BorderRadius.circular(8),
+                                                 color: Colors.white54
+                                               ),
+                                           child: Text("$cartIndex", style: TextStyle( color: Colors.white , fontWeight: FontWeight.bold , fontSize: 20 ),)),
+                                       Container(
+                                           margin:  EdgeInsets.only(left: 10),
+                                           child: GestureDetector(
+                                               onTap: (){
+                                                 setState(() {
+
+                                                   if(id == productId[0]) {
+                                                     if(cartIndexOfItems[0] > 0)
+                                                     cartIndexOfItems[0]--;
+                                                   }
+                                                   if(id == productId[1]) {
+                                                     if(cartIndexOfItems[1] > 0)
+                                                     cartIndexOfItems[1]--;
+                                                   }
+                                                   if(id == productId[2]) {
+                                                     if(cartIndexOfItems[2] > 0)
+                                                     cartIndexOfItems[2]--;
+                                                   }
+                                                   if(id == productId[3]) {
+                                                     if(cartIndexOfItems[3] > 0)
+                                                     cartIndexOfItems[3]--;
+                                                   }
+                                                   if(id == productId[4]) {
+                                                     if(cartIndexOfItems[4] > 0)
+                                                     cartIndexOfItems[4]--;
+                                                   }
+                                                    //cartZeroChecker(cartIndexOfItems , title , price );
+                                                   // cartDecrementGiver(cartIndexOfItems, title, price);
+
+                                                 });
+                                               },
+
+                                               child: cartIndex > 0 ? Text(" -" , style: TextStyle( color: Colors.white , fontWeight: FontWeight.bold ,fontSize: 20 ),) : Container() )),
+                                     ],),
+                                   ),
+                                  ],
+                                 ),
                                ],
                              ),
                            )
@@ -515,7 +754,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                   ),
                   Positioned(
                       left: 180,
-                     top: 125,
+                     top: 135,
                     child: Container(
                       padding: EdgeInsets.all(8),
                       height: 75,
@@ -531,13 +770,13 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage(imgPath),
-                            fit: BoxFit.scaleDown
+                            fit: BoxFit.fill
                           )
                         ),
                       ),
                     ),
                   ),
-                  Positioned(
+                  cartIndex>= 0 ? Positioned(
                     top: 150,
                     left: 40,
                     child: Card(
@@ -547,7 +786,13 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                       ),
                       child: InkWell(
                         onTap: (){
-                          print("ORDER");
+                            if(cartIndex != 0) {
+                              Product tempProduct = new Product(
+                                  title, price, cartIndex);
+                              tempCartItem.add(tempProduct);
+                            }
+                          cartRoom();
+
                         },
                         child: Container(
                           height: 40,
@@ -560,11 +805,11 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                                 //, Color(0xffFF99A6A8)
                               )
                           ),
-                          child: Center(child: Text("Order Now", style: TextStyle(color:Color(0xffFF341006) , fontWeight: FontWeight.bold, fontSize: 15),)),
+                          child: Center(child: Text("Go to cart", style: TextStyle(color:Color(0xffFF341006) , fontWeight: FontWeight.bold, fontSize: 15),)),
                         ),
                       ),
                     ),
-                  ),
+                   ) : Container(),
                 ],
               ),
             ],
@@ -610,3 +855,66 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
   }
 
 }
+// on tap of add to cart
+
+// onTap: (){
+// print("added to cart");
+// String iD = id;
+// ids.add(iD);
+// print(ids);
+// Product tempProduct = new Product( title, price, id, cartIndex);
+// Product tempProduct2 = tempProduct;
+// print(tempProduct.title);
+// // for(int i =1 ; i < ids.length ; i++){
+// //   if (tempProduct.foodId == ids[i]){
+// //     print("hello");
+// //     t=1;
+// //     break;
+// //   }
+// // }
+// // if(t==1){
+// //   tempProduct2.cartIndex += tempProduct.cartIndex;
+// //   tempCartItem.add(tempProduct2);
+// //
+// // }
+// // else if (t==0) {
+// //   tempCartItem.add(tempProduct);
+// // }
+// tempCartItem.add(tempProduct);
+//
+// Navigator.push(context, MaterialPageRoute(
+// builder: (context) => OrderReview(title, price , id , cartIndex  , tempCartItem)
+// ));
+// },
+
+
+
+// logic 2 compare adjacent elements
+//
+// if(tempCartItem.isNotEmpty){
+// print("cart has at least one element");
+// print(tempTitle);
+// if(tempProduct.title == tempTitle){
+// print("if block");
+// tempProduct.cartIndex  += tempCartIndex;
+// print(tempTitle + "  " + tempCartIndex.toString());
+// }
+// else {
+// tempCartItem.add(tempProduct);
+// print("other item added:" + tempProduct.title);
+// tempTitle = tempProduct.title;
+// tempCartIndex = tempProduct.cartIndex;
+// }
+// }
+// else if (tempCartItem.isEmpty){
+// print("1st item added");
+// tempCartItem.add(tempProduct);
+// tempTitle = tempProduct.title;
+// tempCartIndex = tempProduct.cartIndex;
+// print("first item :"+ tempTitle);
+// }
+//
+// for(int i =0 ; i< tempCartItem.length ; i++) {
+// print(tempCartItem[i].title);
+// print(tempCartItem.length);
+// }

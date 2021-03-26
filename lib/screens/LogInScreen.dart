@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'package:cafe91/screens/forgotPasswordScreen.dart';
+import 'package:cafe91/services/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,12 +15,16 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
+
+  final globalKey = GlobalKey<ScaffoldState>();
+  AuthMethods authMethods = new AuthMethods();
   final formKey = GlobalKey<FormState>();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
   logMeIn(){
     if(formKey.currentState.validate()){
+
       Navigator.pushReplacement(context, MaterialPageRoute(
           builder: (context) => Cafe91MainScreen()
       ));
@@ -55,12 +61,12 @@ class _LogInState extends State<LogIn> {
                 color: Colors.blueGrey
               ),
               child: Container(
-                padding: EdgeInsets.only(top: 20 ,),
+                padding: EdgeInsets.only(top: 25 ,),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 0),
                       child: Text("Cafe 91" ,style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold , fontSize: 25),),
                     )
                   ],
@@ -196,7 +202,22 @@ class _LogInState extends State<LogIn> {
                                   ),
                                 ),
                               ),
-                            )
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 5 , horizontal: 20),
+                              child: TextButton(
+                                onPressed: (){
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => ForgotPass()
+                                  ));
+                                },
+                                child: Text("Forgot Password?" ,
+                                  style: TextStyle(
+                                      color: Colors.teal,
+                                      fontWeight: FontWeight.bold
+                                  ),),
+                              ),
+                            ),
                           ],
                         ),
                       ),

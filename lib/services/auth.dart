@@ -47,6 +47,15 @@ class AuthMethods{
       print(e.toString());
     }
   }
+  //method for resetting password
+  Future resetPassword(String email) async{
+    try {
+
+      return _firebaseAuth.sendPasswordResetEmail(email: email);
+    } catch(e){
+      print(e.toString());
+    }
+  }
 
 
 }

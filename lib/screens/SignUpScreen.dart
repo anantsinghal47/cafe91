@@ -3,6 +3,7 @@ import 'package:cafe91/screens/cafeMainScreen.dart';
 import 'package:cafe91/services/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cafe91/modal/product.dart';
 
 // ignore: must_be_immutable
 class SignUp extends StatefulWidget {
@@ -13,10 +14,10 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-
   AuthMethods authMethods = new AuthMethods();
 
   final formKey = GlobalKey<FormState>();
+  final globalKey = GlobalKey<ScaffoldState>();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   TextEditingController usernameController = new TextEditingController();
@@ -42,23 +43,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("Cafe 91" , style: TextStyle(
-      //     fontWeight: FontWeight.bold,
-      //   ),
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(Icons.more_vert_outlined),
-      //       onPressed: (){},
-      //     )
-      //   ],
-      //   toolbarHeight: 40,
-      //   bottomOpacity: 2,
-      //   backgroundColor: Colors.blueGrey,
-      // ),
 
-      //bottomNavigationBar: SnackBar( ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -68,12 +53,12 @@ class _SignUpState extends State<SignUp> {
                   color: Colors.blueGrey
               ),
               child: Container(
-                padding: EdgeInsets.only(top: 20 ,),
+                padding: EdgeInsets.only(top: 25 ,),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 0),
                       child: Text("Cafe 91" ,style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold , fontSize: 25),),
                     )
                   ],
