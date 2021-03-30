@@ -3,7 +3,6 @@ import 'package:cafe91/screens/cafeMainScreen.dart';
 import 'package:cafe91/services/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cafe91/modal/product.dart';
 
 // ignore: must_be_immutable
 class SignUp extends StatefulWidget {

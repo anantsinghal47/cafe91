@@ -1,20 +1,22 @@
-//
-// class Product{
-//   String title;
-//   int price;
-//   String foodId;
-//   int cartIndex;
-//
-//   Product(this.title,this.price,this.foodId,this.cartIndex );
-//
-// }
 
 
+import 'package:flutter/cupertino.dart';
 
 class Product{
-  String title;
-  int price;
-  int cartIndex;
-  Product(this.title,this.price,this.cartIndex );
+  final String id;
+  final String title;
+  final double price;
+  final String imgPath;
+  final String description ;
+  bool isFav;
+
+  Product({
+    @required this.id ,
+    @required this.title ,
+    @required this.price ,
+    @required this.imgPath ,
+    @required this.description ,
+    this.isFav
+  });
 
 }

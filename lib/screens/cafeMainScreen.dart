@@ -1,8 +1,10 @@
+
 import 'dart:ui';
 import 'package:cafe91/helper/authenticate.dart';
+import 'package:cafe91/provider/cart.dart';
 import 'package:cafe91/screens/OrderScreen.dart';
+import 'package:cafe91/screens/CartScreen.dart';
 import 'package:cafe91/screens/Settings.dart';
-import 'package:cafe91/screens/cartScreen.dart';
 import 'package:cafe91/screens/favorites.dart';
 import 'package:cafe91/screens/searchScreen.dart';
 import 'package:cafe91/services/auth.dart';
@@ -11,6 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cafe91/modal/product.dart';
+import 'package:provider/provider.dart';
+import 'package:cafe91/provider/product_provider.dart';
+import 'package:cafe91/widgets/badge.dart';
 
 // ignore: must_be_immutable
 class Cafe91MainScreen extends StatefulWidget {
@@ -30,41 +35,21 @@ class Cafe91MainScreen extends StatefulWidget {
 
 class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
 
-  // String tempTitle;
-  // String temp2Title;
-  // int tempCartIndex;
-  // int temp2CartIndex;
-  // int t =0;
-  // List<String> ids = [];
 
   List<Product> transferList  = [];
   List <Product> tempCartItem = [];
   Set<Product> setCart = {};
   Set<Product> setCart2 = {};
   bool temp2 = false;
-  // List <Product> foodCartItem = [];
-  static List<int> cartIndexOfItems = [ 0 , 0 , 0 , 0 , 0] ;
-  static List<String> productId = [
-    "${DateTime.now().millisecondsSinceEpoch} +cheeseSamosa" ,
-    "${DateTime.now().millisecondsSinceEpoch} +paneerPizza" ,
-    "${DateTime.now().millisecondsSinceEpoch} +Chocolaty Chai",
-    "${DateTime.now().millisecondsSinceEpoch} +choleKulche",
-    "${DateTime.now().millisecondsSinceEpoch} +pasta"
 
-  ];
-  static List<bool> favIndicator = [false , false , false , false , false ];
-
-   bool isFav = false;
-   //int cartIndex = 1 ;
-   //bool isFav = false;
-   Product cheeseSamosa = new Product("Cheese Samosa" , 20  , cartIndexOfItems[0]);
-   Product paneerPizza = new Product("Paneer Pizza" , 200 , cartIndexOfItems[1] );
-   Product chocolatyChai = new Product("Chocolaty Chai" , 15  , cartIndexOfItems[2]);
-   Product choleKulche = new Product("Chole kulche" , 40  , cartIndexOfItems[3]);
-   Product pasta = new Product("Red Sauce Pasta" , 60  , cartIndexOfItems[4]);
-
-   //List<Product> product =[ cheeseSamosa, paneerPizza , ];
-
+  List<int> quantitiesOfItems = [0 , 0 , 0 , 0 , 0];
+  // List<Product> loadProducts = [
+  //  Product('p1',"Cheese Samosa", 20, 'assets/images/samosa.jpg', 'crispy potato samosa',false),
+  //  Product('p2',"Paneer Pizza", 200, 'assets/images/pizz1.jpg','Double Cheese Pizza' ,false),
+  //  Product('p3',"Chocolaty Chai", 15, 'assets/images/ck2.jpg', 'hot chick pea',false),
+  //  Product('p4',"Chole kulche", 40, 'assets/images/pizz1.jpg', 'choco tea ',false),
+  //  Product('p5',"Red Sauce Pasta", 60, 'assets/images/ps4.jpg', 'pasta',false),
+  // ];
 
   int _currentIndex = 0;
   AuthMethods authMethods  = new AuthMethods();
@@ -72,20 +57,18 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
 
 
      setState(() {
-       if(id == productId[0]) {
-         favIndicator[0] = !favIndicator[0];
-       }
-       if(id == productId[1]) {
-         favIndicator[1] = !favIndicator[1];
-       }
-       if(id == productId[2]) {
-         favIndicator[2] = !favIndicator[2];
-       }
-       if(id == productId[3]) {
-         favIndicator[3] = !favIndicator[3];
-       }
-       if(id == productId[4]) {
-         favIndicator[4] = !favIndicator[4];
+       final loadProducts =Provider.of<Products>(context).items;
+       for(int i = 0 ; i< loadProducts.length ; i++){
+         if(id == loadProducts[i].id){
+           loadProducts[i].isFav = !loadProducts[i].isFav;
+           //print(loadProducts[i].title);
+           if(loadProducts[i].isFav){
+             print("item added in fav :" + loadProducts[i].title);
+           }
+           else{
+             print("item removed from fav: " + loadProducts[i].title);
+           }
+         }
        }
      });
 
@@ -104,93 +87,93 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
   }
   cartRoom(){
 
-     setState(() {
-       print("you are in cart screen");
-       for(int i = 0 ; i < tempCartItem.length ; i++){
-
-         for(int j =0 ; j < tempCartItem.length - 1 ; j++){
-           if(tempCartItem[i].title == tempCartItem[j+1].title){
-             print("same item matched");
-             tempCartItem[i] = tempCartItem[j+1];
-             //tempCartItem.removeAt(j+1);
-           }
-         }
-       }
-       for(int i = 0 ; i < tempCartItem.length ; i++){
-         if(tempCartItem[i].cartIndex == 0){
-           tempCartItem.removeAt(i);
-         }
-       }
-
-       print(tempCartItem.length);
-       setCart = tempCartItem.toSet();
-       print(setCart.length);
-       if((Cafe91MainScreen.updatedCartList1.isEmpty || Cafe91MainScreen.updatedCartList1 == null) && Cafe91MainScreen.temp == false ) {
-         print("t1");
-         Cafe91MainScreen.updatedCartList1 = tempCartItem;
-
-
-       }
-       if( (Cafe91MainScreen.updatedCartList1.isEmpty || Cafe91MainScreen.updatedCartList1 == null) && Cafe91MainScreen.temp   ) {
-          print("t2");
-          // for(int i ; i < setCart.length  ; i++){
-          //   setCart.elementAt(i).cartIndex = 0;
-          // }
-          // for(int i ; i < tempCartItem.length  ; i++){
-          // tempCartItem.elementAt(i).cartIndex =0;
-          // }
-          temp2 = true;
-         setCart.clear();
-
-         //tempCartItem[0].cartIndex=0;
-         Cafe91MainScreen.temp = false;
-
-       }
-       // if(temp2){
-       //   print("cart index should be zero");
-       //   for ( int i = 0 ; i < cartIndexOfItems.length ; i++){
-       //     cartIndexOfItems[i] = 0 ;
-       //   }
-       // }
-       setCart = Cafe91MainScreen.updatedCartList1.toSet();
-       print(setCart.length.toString());
-
-     });
-    setState(() {
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CartScreen(setCart.toList())
-      ));
-    });
+    //  setState(() {
+    //    print("you are in cart screen");
+    //    for(int i = 0 ; i < tempCartItem.length ; i++){
+    //
+    //      for(int j =0 ; j < tempCartItem.length - 1 ; j++){
+    //        if(tempCartItem[i].title == tempCartItem[j+1].title){
+    //          print("same item matched");
+    //          tempCartItem[i] = tempCartItem[j+1];
+    //          //tempCartItem.removeAt(j+1);
+    //        }
+    //      }
+    //    }
+    //    for(int i = 0 ; i < tempCartItem.length ; i++){
+    //      if(tempCartItem[i].cartIndex == 0){
+    //        tempCartItem.removeAt(i);
+    //      }
+    //    }
+    //
+    //    print(tempCartItem.length);
+    //    setCart = tempCartItem.toSet();
+    //    print(setCart.length);
+    //    if((Cafe91MainScreen.updatedCartList1.isEmpty || Cafe91MainScreen.updatedCartList1 == null) && Cafe91MainScreen.temp == false ) {
+    //      print("t1");
+    //      Cafe91MainScreen.updatedCartList1 = tempCartItem;
+    //
+    //
+    //    }
+    //    if( (Cafe91MainScreen.updatedCartList1.isEmpty || Cafe91MainScreen.updatedCartList1 == null) && Cafe91MainScreen.temp   ) {
+    //       print("t2");
+    //       // for(int i ; i < setCart.length  ; i++){
+    //       //   setCart.elementAt(i).cartIndex = 0;
+    //       // }
+    //       // for(int i ; i < tempCartItem.length  ; i++){
+    //       // tempCartItem.elementAt(i).cartIndex =0;
+    //       // }
+    //       temp2 = true;
+    //      setCart.clear();
+    //
+    //      //tempCartItem[0].cartIndex=0;
+    //      Cafe91MainScreen.temp = false;
+    //
+    //    }
+    //    // if(temp2){
+    //    //   print("cart index should be zero");
+    //    //   for ( int i = 0 ; i < cartIndexOfItems.length ; i++){
+    //    //     cartIndexOfItems[i] = 0 ;
+    //    //   }
+    //    // }
+    //    setCart = Cafe91MainScreen.updatedCartList1.toSet();
+    //    print(setCart.length.toString());
+    //
+    //  });
+    // setState(() {
+    //   Navigator.push(context, MaterialPageRoute(
+    //       builder: (context) => CartScreen(setCart.toList())
+    //   ));
+    // });
 
   }
 
-  cartZeroChecker(List <int> cartIndexOfItems , title , price){
-     for(int i =0 ; i <cartIndexOfItems.length ; i++){
-       if(cartIndexOfItems[i] == 0){
-         Product tempProduct = new Product( title, price, cartIndexOfItems[i]);
-         tempCartItem.add(tempProduct);
-         //cartRoom();
-       }
-     }
-  }
-  cartIncrementGiver(List <int> cartIndexOfItems , title , price){
-    for(int i =0 ; i <cartIndexOfItems.length ; i++){
-      if(cartIndexOfItems[i] != 0){
-        Product tempProduct = new Product( title, price, cartIndexOfItems[i]);
-        tempCartItem.add(tempProduct);
-
-      }
-    }
-  }
-  cartDecrementGiver(List <int> cartIndexOfItems , title , price){
-    for(int i =0 ; i <cartIndexOfItems.length ; i++){
-      if(cartIndexOfItems[i] != 0){
-        Product tempProduct = new Product( title, price, cartIndexOfItems[i]);
-        tempCartItem.add(tempProduct);
-
-      }
-    }
-  }
+  // cartZeroChecker(List <int> cartIndexOfItems , title , price){
+  //    for(int i =0 ; i <cartIndexOfItems.length ; i++){
+  //      if(cartIndexOfItems[i] == 0){
+  //        Product tempProduct = new Product( title, price, cartIndexOfItems[i]);
+  //        tempCartItem.add(tempProduct);
+  //        //cartRoom();
+  //      }
+  //    }
+  // }
+  // cartIncrementGiver(List <int> cartIndexOfItems , title , price){
+  //   for(int i =0 ; i <cartIndexOfItems.length ; i++){
+  //     if(cartIndexOfItems[i] != 0){
+  //       Product tempProduct = new Product( title, price, cartIndexOfItems[i]);
+  //       tempCartItem.add(tempProduct);
+  //
+  //     }
+  //   }
+  // }
+  // cartDecrementGiver(List <int> cartIndexOfItems , title , price){
+  //   for(int i =0 ; i <cartIndexOfItems.length ; i++){
+  //     if(cartIndexOfItems[i] != 0){
+  //       Product tempProduct = new Product( title, price, cartIndexOfItems[i]);
+  //       tempCartItem.add(tempProduct);
+  //
+  //     }
+  //   }
+  // }
    slideSheet() {
      if (true) {
        showModalBottomSheet(
@@ -269,8 +252,9 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+     final productData = Provider.of<Products>(context);
+     final loadProducts = productData.items;
     return Scaffold(
-
       drawer: Container(
         padding: EdgeInsets.only(top: 33),
         child: Drawer(
@@ -315,6 +299,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                 ],
               ),
               ListTile(
+                leading: Icon(Icons.person),
                 focusColor: Colors.brown,
                 title: Text('Account Settings' ,style: TextStyle(fontWeight: FontWeight.bold , color: Colors.black54),),
                 onTap: () {
@@ -325,6 +310,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                 },
               ),
               ListTile(
+                leading: Icon(Icons.fastfood),
                 title: Text('Your Orders',style: TextStyle(fontWeight: FontWeight.bold , color: Colors.black54)),
                 onTap: () {
 
@@ -336,6 +322,7 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
                 },
               ),
               ListTile(
+                leading: Icon(Icons.logout),
                 title: Text('Log Out',style: TextStyle(fontWeight: FontWeight.bold , color: Colors.black54)),
                 onTap: () {
                   slideSheet();
@@ -408,7 +395,13 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
               backgroundColor: Color(0xffFF402C24)
           ),
           BottomNavigationBarItem(
-              icon:Icon(Icons.shopping_cart , color: Colors.orange[100], ),
+              icon:Consumer<Cart>(builder: (_ , cart , ch) => Badge(
+                          child: ch,
+                         value: cart.itemCount.toString(),
+
+                  ),
+                  child: Icon(Icons.shopping_cart , color: Colors.orange[100], )
+                  ),
               // ignore: deprecated_member_use
               title: Text("cart" , style: TextStyle(color:  Colors.white54, fontSize: 13), ),
               backgroundColor: Color(0xffFF402C24)
@@ -429,7 +422,12 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
             favorites();
           }
           else if(_currentIndex==3){
-          cartRoom();
+            quantitiesOfItems[0] = 0;
+            quantitiesOfItems[1] = 0;
+            quantitiesOfItems[2] = 0;
+            quantitiesOfItems[3] = 0;
+            quantitiesOfItems[4] = 0;
+          Navigator.of(context).pushNamed(CartScreen.routeName);
           }
 
 
@@ -513,11 +511,11 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
              child: ListView(
                scrollDirection: Axis.horizontal,
                children: [
-                 listCard("assets/images/samosa.jpg" , cheeseSamosa.title , "crispy potato samosa" , cheeseSamosa.price , favIndicator[0] ,productId[0] , cartIndexOfItems[0] ),
-                 listCard("assets/images/pizz1.jpg" , paneerPizza.title , "Double Cheese Pizza" , paneerPizza.price , favIndicator[1] , productId[1] , cartIndexOfItems[1]),
-                 listCard("assets/images/ck2.jpg" , choleKulche.title , " hot chick pea " , choleKulche.price , favIndicator[2] ,productId[2] , cartIndexOfItems[2]),
-                 listCard("assets/images/pizz1.jpg" , chocolatyChai.title, " choco tea " , chocolatyChai.price , favIndicator[3] , productId[3] , cartIndexOfItems[3]),
-                 listCard("assets/images/ps4.jpg" , pasta.title , "pasta" , pasta.price , favIndicator[4] , productId[4],cartIndexOfItems[4]),
+                 listCard(loadProducts[0].imgPath, loadProducts[0].title, loadProducts[0].description, loadProducts[0].price, loadProducts[0].isFav, loadProducts[0].id, quantitiesOfItems[0] ),
+                 listCard(loadProducts[1].imgPath, loadProducts[1].title, loadProducts[1].description, loadProducts[1].price, loadProducts[1].isFav, loadProducts[1].id, quantitiesOfItems[1] ),
+                 listCard(loadProducts[2].imgPath, loadProducts[2].title, loadProducts[2].description, loadProducts[2].price, loadProducts[2].isFav, loadProducts[2].id, quantitiesOfItems[2] ),
+                 listCard(loadProducts[3].imgPath, loadProducts[3].title, loadProducts[3].description, loadProducts[3].price, loadProducts[3].isFav, loadProducts[3].id, quantitiesOfItems[3] ),
+                 listCard(loadProducts[4].imgPath, loadProducts[4].title, loadProducts[4].description, loadProducts[4].price, loadProducts[4].isFav, loadProducts[4].id, quantitiesOfItems[4] ),
                ],
              ),
            ),
@@ -580,243 +578,269 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
     );
   }
 
-  listCard(String imgPath, String title , String desp, int price , bool isFav , String id , int cartIndex ){
+  listCard(String imgPath, String title , String desp, double price , bool isFav , String id , int quantity){
     //bool itemBool=isFav;
-    return  Container(
-      height: 200,
+    final cart = Provider.of<Cart>(context , listen: false);
 
-        padding: EdgeInsets.only(left: 25 , right:20 ),
-        child: Container(
+    return  Builder(
+      builder: (ctx) =>  Container(
+        height: 200,
+          padding: EdgeInsets.only(left: 25 , right:20 ),
+          child: Container(
 
-          height: 300,
-          width: 300,
-          child: Column(
-            //mainAxisSize: MainAxisSize.max,
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    height: 220,
-                  ),
-                  Positioned(
-                    top: 15,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 10 , right: 10),
-                      height: 160,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        gradient: LinearGradient(
-                          // Color(0xffFFF1AE81)
-                          colors: [ Colors.brown , Color(0xffFF341006),]
-                              //, Color(0xffFF99A6A8)
-                        )
-                      ),
-                     child: Padding(
-                       padding: const EdgeInsets.only( top: 10),
-                       child: Column(
-
-                         children: [
-                           Padding(
-                             padding: const EdgeInsets.symmetric(horizontal: 10 , ),
-                             child: Row(children: [
-                                  SizedBox(width: 3,),
-                                  Expanded(
-                                      child: Text(
-                                          title, style: TextStyle(
-                                          fontWeight: FontWeight.bold ,
-                                          fontSize: 20 , color: Colors.white)
-                                      )
-                                  ),
-                                  SizedBox(width: 0,),
-                                  Container(
-                                     height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      //border: Border.all(color: Colors.grey),
-                                      color: Colors.brown,
-                                    ),
-                                    child: IconButton(
-                                      icon: Icon(Icons.favorite , color: isFav ?   Colors.red[200] : Colors.white54),
-                                      onPressed: (){
-                                        print("pressed" + "$id" );
-                                        fav(id);
-
-                                      },
-                                    ),
-                                  )
-                                  //SizedBox(height: 10,),
-                                ],
-                             ),
-                           ),
-
-                           Padding(
-                             padding: const EdgeInsets.symmetric(horizontal: 0),
-                             child: Column(
-                               children: [
-                                 Padding(
-                                   padding: const EdgeInsets.only(left: 10 , top: 5),
-                                   child: Row(children: [
-                                     Text(desp, style: TextStyle(fontWeight: FontWeight.bold , fontSize: 15 , color: Colors.white54)),
-                                   ],),
-                                 ),
-                                 SizedBox(height: 10,),
-                                 Row(children: [
-                                   Padding(
-                                     padding: const EdgeInsets.only(left: 10),
-                                     child: Text("\₹${price.toString()}", style: TextStyle(fontWeight: FontWeight.bold , fontSize: 20 , color: Colors.white)),
-                                   ),
-                                   SizedBox(width: 140,),
-                                   Container(
-
-                                     child: Row(children: [
-
-                                       Container(
-                                           margin:  EdgeInsets.only(right: 10),
-                                           child: GestureDetector(
-                                                onTap: (){
-                                                 setState(() {
-
-                                                   print(tempCartItem.length);
-                                                   if(id == productId[0]) {
-                                                     cartIndexOfItems[0]++;
-                                                   }
-                                                   if(id == productId[1]) {
-                                                     cartIndexOfItems[1]++;
-                                                   }
-                                                   if(id == productId[2]) {
-                                                     cartIndexOfItems[2]++;
-                                                   }
-                                                   if(id == productId[3]) {
-                                                     cartIndexOfItems[3]++;
-                                                   }
-                                                   if(id == productId[4]) {
-                                                     cartIndexOfItems[4]++;
-                                                   }
-                                                   cartIncrementGiver(cartIndexOfItems , title , price);
-                                                 });
-                                                },
-
-                                               child: Text("+ " , style: TextStyle( color: Colors.white , fontWeight: FontWeight.bold ,fontSize: 20 ),))),
-                                       Container(
-                                         padding: EdgeInsets.only(right: 8 , left: 8 , bottom: 3 , top: 0),
-
-                                               decoration:  BoxDecoration(
-                                                 borderRadius: BorderRadius.circular(8),
-                                                 color: Colors.white54
-                                               ),
-                                           child: Text("$cartIndex", style: TextStyle( color: Colors.white , fontWeight: FontWeight.bold , fontSize: 20 ),)),
-                                       Container(
-                                           margin:  EdgeInsets.only(left: 10),
-                                           child: GestureDetector(
-                                               onTap: (){
-                                                 setState(() {
-
-                                                   if(id == productId[0]) {
-                                                     if(cartIndexOfItems[0] > 0)
-                                                     cartIndexOfItems[0]--;
-                                                   }
-                                                   if(id == productId[1]) {
-                                                     if(cartIndexOfItems[1] > 0)
-                                                     cartIndexOfItems[1]--;
-                                                   }
-                                                   if(id == productId[2]) {
-                                                     if(cartIndexOfItems[2] > 0)
-                                                     cartIndexOfItems[2]--;
-                                                   }
-                                                   if(id == productId[3]) {
-                                                     if(cartIndexOfItems[3] > 0)
-                                                     cartIndexOfItems[3]--;
-                                                   }
-                                                   if(id == productId[4]) {
-                                                     if(cartIndexOfItems[4] > 0)
-                                                     cartIndexOfItems[4]--;
-                                                   }
-                                                    //cartZeroChecker(cartIndexOfItems , title , price );
-                                                   // cartDecrementGiver(cartIndexOfItems, title, price);
-
-                                                 });
-                                               },
-
-                                               child: cartIndex > 0 ? Text(" -" , style: TextStyle( color: Colors.white , fontWeight: FontWeight.bold ,fontSize: 20 ),) : Container() )),
-                                     ],),
-                                   ),
-                                  ],
-                                 ),
-                               ],
-                             ),
-                           )
-                         ],
-                       ),
-                     ),
+            height: 300,
+            width: 300,
+            child: Column(
+              //mainAxisSize: MainAxisSize.max,
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 220,
                     ),
-                  ),
-                  Positioned(
-                      left: 180,
-                     top: 135,
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      height: 75,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(20) , bottomLeft:Radius.circular(20) , topLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
-                        color: Colors.white,
-                        border: Border.all(color: Color(0xffFFF1AE81) , width: 3 ,)
-                      ),
+                    Positioned(
+                      top: 15,
                       child: Container(
-                        height: 50,
-                        width: 50,
+                        padding: EdgeInsets.only(left: 10 , right: 10),
+                        height: 160,
+                        width: 300,
                         decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(imgPath),
-                            fit: BoxFit.fill
+                          borderRadius: BorderRadius.circular(30),
+                          gradient: LinearGradient(
+                            // Color(0xffFFF1AE81)
+                            colors: [ Colors.brown , Color(0xffFF341006),]
+                                //, Color(0xffFF99A6A8)
                           )
                         ),
+                       child: Padding(
+                         padding: const EdgeInsets.only( top: 10),
+                         child: Column(
+
+                           children: [
+                             Padding(
+                               padding: const EdgeInsets.symmetric(horizontal: 10 , ),
+                               child: Row(children: [
+                                    SizedBox(width: 3,),
+                                    Expanded(
+                                        child: Text(
+                                            title, style: TextStyle(
+                                            fontWeight: FontWeight.bold ,
+                                            fontSize: 20 , color: Colors.white)
+                                        )
+                                    ),
+                                    SizedBox(width: 0,),
+                                    Container(
+                                       height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(100),
+                                        //border: Border.all(color: Colors.grey),
+                                        color: Colors.brown,
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(Icons.favorite , color: isFav ?   Colors.red[200] : Colors.white54),
+                                        onPressed: (){
+                                          //print("pressed" + "$id" );
+                                          fav(id);
+
+                                        },
+                                      ),
+                                    )
+                                    //SizedBox(height: 10,),
+                                  ],
+                               ),
+                             ),
+
+                             Padding(
+                               padding: const EdgeInsets.symmetric(horizontal: 0),
+                               child: Column(
+                                 children: [
+                                   Padding(
+                                     padding: const EdgeInsets.only(left: 10 , top: 5),
+                                     child: Row(children: [
+                                       Text(desp, style: TextStyle(fontWeight: FontWeight.bold , fontSize: 15 , color: Colors.white54)),
+                                     ],),
+                                   ),
+                                   SizedBox(height: 10,),
+                                   Row(children: [
+                                     Padding(
+                                       padding: const EdgeInsets.only(left: 10),
+                                       child: Text("\₹${price.toString()}", style: TextStyle(fontWeight: FontWeight.bold , fontSize: 20 , color: Colors.white)),
+                                     ),
+                                     Spacer(),
+                                     Container(
+
+                                       child: Row(children: [
+
+                                         Container(
+                                             margin:  EdgeInsets.only(right: 10),
+                                             child: GestureDetector(
+                                                  onTap: (){
+                                                   setState(() {
+                                                     print("incremented");
+                                                     if(id == 'p1'){
+                                                       quantitiesOfItems[0]++;
+                                                     }
+                                                     if(id == 'p2'){
+                                                       quantitiesOfItems[1]++;
+                                                     }
+                                                     if(id == 'p3'){
+                                                       quantitiesOfItems[2]++;
+                                                     }
+                                                     if(id == 'p4'){
+                                                       quantitiesOfItems[3]++;
+                                                     }
+                                                     if(id == 'p5'){
+                                                       quantitiesOfItems[4]++;
+                                                     }
+                                                     print(quantity);
+                                                   });
+                                                  },
+
+                                                 child: Text("+ " , style: TextStyle( color: Colors.white , fontWeight: FontWeight.bold ,fontSize: 20 ),))),
+                                         Container(
+                                           padding: EdgeInsets.only(right: 8 , left: 8 , bottom: 3 , top: 0),
+
+                                                 decoration:  BoxDecoration(
+                                                   borderRadius: BorderRadius.circular(8),
+                                                   color: Colors.white54
+                                                 ),
+                                                 child: Text(
+                                                   "$quantity",
+                                                   style: TextStyle(
+                                                       color: Colors.white ,
+                                                       fontWeight: FontWeight.bold ,
+                                                       fontSize: 20
+                                                   ),
+                                                 )
+
+                                         ),
+                                         Container(
+                                             margin:  EdgeInsets.only(left: 10),
+                                             child: GestureDetector(
+                                                 onTap: (){
+                                                   setState(() {
+                                                     if(id == 'p1'){
+                                                       if(quantitiesOfItems[0] > 0)
+                                                       quantitiesOfItems[0]--;
+                                                     }
+                                                     if(id == 'p2'){
+                                                       if(quantitiesOfItems[1] > 0)
+                                                         quantitiesOfItems[1]--;
+                                                     }
+                                                     if(id == 'p3'){
+                                                       if(quantitiesOfItems[2] > 0)
+                                                         quantitiesOfItems[2]--;
+                                                     }
+                                                     if(id == 'p4'){
+                                                       if(quantitiesOfItems[3] > 0)
+                                                         quantitiesOfItems[3]--;
+                                                     }
+                                                     if(id == 'p5'){
+                                                       if(quantitiesOfItems[4] > 0)
+                                                         quantitiesOfItems[4]--;
+                                                     }
+                                                   });
+                                                 },
+
+                                                 child: quantity > 0 ? Text(
+                                                   " -" , style:
+                                                 TextStyle(
+                                                     color: Colors.white ,
+                                                     fontWeight: FontWeight.bold ,
+                                                     fontSize: 20
+                                                 ),
+                                                 ) : Container() )),
+                                        ],
+                                       ),
+                                     ),
+                                    ],
+                                   ),
+                                 ],
+                               ),
+                             )
+                           ],
+                         ),
+                       ),
                       ),
                     ),
-                  ),
-                  cartIndex>= 0 ? Positioned(
-                    top: 150,
-                    left: 40,
-                    child: Card(
-                      elevation: 7,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius. circular(100),
-                      ),
-                      child: InkWell(
-                        onTap: (){
-                            if(cartIndex != 0) {
-                              Product tempProduct = new Product(
-                                  title, price, cartIndex);
-                              tempCartItem.add(tempProduct);
-                            }
-                          cartRoom();
-
-                        },
+                    Positioned(
+                        left: 180,
+                       top: 135,
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        height: 75,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(topRight: Radius.circular(20) , bottomLeft:Radius.circular(20) , topLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                          color: Colors.white,
+                          border: Border.all(color: Color(0xffFFF1AE81) , width: 3 ,)
+                        ),
                         child: Container(
-                          height: 40,
-                          width: 100,
+                          height: 50,
+                          width: 50,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Color(0xffFFF1AE81) , width: 3 ,),
-                              gradient: LinearGradient(
-                                  colors: [  Color(0xffFFF1AE81) , Color(0xffFFF1AE81),]
-                                //, Color(0xffFF99A6A8)
-                              )
+                            image: DecorationImage(
+                              image: AssetImage(imgPath),
+                              fit: BoxFit.fill
+                            )
                           ),
-                          child: Center(child: Text("Go to cart", style: TextStyle(color:Color(0xffFF341006) , fontWeight: FontWeight.bold, fontSize: 15),)),
                         ),
                       ),
                     ),
-                   ) : Container(),
-                ],
-              ),
-            ],
-          ),
+                    quantity> 0 ? Positioned(
+                      top: 150,
+                      left: 40,
+                      child: Card(
+                        elevation: 7,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius. circular(100),
+                        ),
+                        child: InkWell(
+                          onTap: (){
+                            cart.addItem(id, title, price, quantity);
+                            Future.delayed(Duration(milliseconds: 1)).then((_) {
+                              final snackBar = SnackBar(
+                                backgroundColor: Colors.brown,
+                                content: Text(title  + " added to cart!" , style:  TextStyle(color: Colors.white , fontSize: 12), ),
+                                duration: Duration(milliseconds: 250),
+                              );
+                              Scaffold.of(ctx).showSnackBar(snackBar);
+                            } );
 
+
+                            // Find the ScaffoldMessenger in the widget tree
+                            // and use it to show a SnackBar.
+                            Scaffold.of(ctx).hideCurrentSnackBar();
+                            
+
+
+                          },
+
+                          child: Container(
+                            height: 40,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Color(0xffFFF1AE81) , width: 3 ,),
+                                gradient: LinearGradient(
+                                    colors: [  Color(0xffFFF1AE81) , Color(0xffFFF1AE81),]
+                                  //, Color(0xffFF99A6A8)
+                                )
+                            ),
+                            child: Center(child: Text("Add to cart", style: TextStyle(color:Color(0xffFF341006) , fontWeight: FontWeight.bold, fontSize: 15),)),
+                          ),
+                        ),
+                      ),
+                     ) : Container(),
+                  ],
+                ),
+              ],
+            ),
+
+          ),
         ),
-      );
+    );
   }
   menuList(String item ,String imgPath){
     return Padding(
@@ -855,66 +879,3 @@ class _Cafe91MainScreenState extends State<Cafe91MainScreen> {
   }
 
 }
-// on tap of add to cart
-
-// onTap: (){
-// print("added to cart");
-// String iD = id;
-// ids.add(iD);
-// print(ids);
-// Product tempProduct = new Product( title, price, id, cartIndex);
-// Product tempProduct2 = tempProduct;
-// print(tempProduct.title);
-// // for(int i =1 ; i < ids.length ; i++){
-// //   if (tempProduct.foodId == ids[i]){
-// //     print("hello");
-// //     t=1;
-// //     break;
-// //   }
-// // }
-// // if(t==1){
-// //   tempProduct2.cartIndex += tempProduct.cartIndex;
-// //   tempCartItem.add(tempProduct2);
-// //
-// // }
-// // else if (t==0) {
-// //   tempCartItem.add(tempProduct);
-// // }
-// tempCartItem.add(tempProduct);
-//
-// Navigator.push(context, MaterialPageRoute(
-// builder: (context) => OrderReview(title, price , id , cartIndex  , tempCartItem)
-// ));
-// },
-
-
-
-// logic 2 compare adjacent elements
-//
-// if(tempCartItem.isNotEmpty){
-// print("cart has at least one element");
-// print(tempTitle);
-// if(tempProduct.title == tempTitle){
-// print("if block");
-// tempProduct.cartIndex  += tempCartIndex;
-// print(tempTitle + "  " + tempCartIndex.toString());
-// }
-// else {
-// tempCartItem.add(tempProduct);
-// print("other item added:" + tempProduct.title);
-// tempTitle = tempProduct.title;
-// tempCartIndex = tempProduct.cartIndex;
-// }
-// }
-// else if (tempCartItem.isEmpty){
-// print("1st item added");
-// tempCartItem.add(tempProduct);
-// tempTitle = tempProduct.title;
-// tempCartIndex = tempProduct.cartIndex;
-// print("first item :"+ tempTitle);
-// }
-//
-// for(int i =0 ; i< tempCartItem.length ; i++) {
-// print(tempCartItem[i].title);
-// print(tempCartItem.length);
-// }
